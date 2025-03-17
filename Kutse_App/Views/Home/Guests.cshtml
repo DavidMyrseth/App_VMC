@@ -1,0 +1,69 @@
+﻿@model IEnumerable<Kutse_App.Models.Guest>
+
+@{
+    ViewBag.Title = "Külalised";
+}
+
+<h2>Külalised</h2>
+@if (User.IsInRole("Admin"))
+{
+    <p>
+        @Html.ActionLink("Loo uus", "Create")
+    </p>
+
+    <p>
+        <a href="@Url.Action("WillAttendGuests", "Home")">Tulevad</a> |
+        <a href="@Url.Action("NotAttendingGuests", "Home")">Loobusid</a> |
+        <a href="@Url.Action("AllGuests", "Home")">Kõik</a>
+    </p>
+}
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Email)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Phone)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.WillAttend)
+        </th>
+        <th>
+            Holiday
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Phone)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WillAttend)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Holiday.Name) <!-- Display the associated holiday name -->
+            </td>
+            @if (User.IsInRole("Admin"))
+            {
+                <td>
+                    @Html.ActionLink("Muuda", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Kustuta", "Delete", new { id = item.Id })
+                </td>
+            }
+        </tr>
+    }
+
+</table>

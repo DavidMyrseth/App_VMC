@@ -1,0 +1,77 @@
+﻿@model Kutse_App.Models.Guest
+
+@{
+    ViewBag.Title = "Ankeet";
+}
+
+<h2>Registreeru</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Külaline</h4>
+        <hr />
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(x => x.Name, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
+                @Html.ValidationMessageFor(x => x.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(x => x.Email, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(x => x.Email, new { @class = "form-control" })
+                @Html.ValidationMessageFor(x => x.Email, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(x => x.Phone, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(x => x.Phone, new { @class = "form-control" })
+                @Html.ValidationMessageFor(x => x.Phone, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(x => x.HolidayId, "Valige püha:", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(x => x.HolidayId, (SelectList)ViewBag.Holidays, "Vali püha", new { @class = "form-control" })
+                @Html.ValidationMessageFor(x => x.HolidayId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @if (User.IsInRole("Admin"))
+        {
+            <div class="form-group">
+                @Html.LabelFor(x => x.WillAttend, "Kas tuleb?", new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(x => x.WillAttend,
+                        new[]
+                        {
+                            new SelectListItem() { Text = "Tule kindlasti!", Value = bool.TrueString },
+                            new SelectListItem() { Text = "Kahjuks ei saa tulla!", Value = bool.FalseString }
+                        }, "Vali siit", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.WillAttend, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Saada vastus" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Tagasi loendisse", "Holidays", new { @class = "btn btn-default" })
+</div>

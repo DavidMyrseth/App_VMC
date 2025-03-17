@@ -1,0 +1,41 @@
+﻿@model Kutse_App.Models.Guest
+
+@{
+    ViewBag.Title = "Thanks";
+}
+
+<div>
+    <p> Tänan sind @Model.Name </p>
+</div>
+
+<div>
+    @if (Model.WillAttend == true)
+    {
+        @:Ootame sind kallis sõber!
+        <p>
+            <br />
+            <img src="~/Images/happy.jpg" style="max-width: 100%; height: auto;" />
+        </p>
+        <!--Meeldetuletus - tegevusmeetodi nimi, millele vorm saadetakse, Home - kontrolleri nimi, kus toiming on olemas, FormMethod.Post - andmed saadetakse serverisse, kui vorm esitatakse.-->
+        using (Html.BeginForm("Meeldetuletus", "Home", FormMethod.Post))
+        {
+            <!--peidetud sisendväli, nii et kasutaja ei näe vormi ennast-->
+            @Html.HiddenFor(m => m.Name)
+            @Html.HiddenFor(m => m.Email)
+            @Html.HiddenFor(m => m.Phone)
+            @Html.HiddenFor(m => m.WillAttend)
+
+            <input type="submit" value="Meeldetuletus" name="Meeldetuletus" />
+        }
+    }
+    else
+    {
+        @:Väga kurb uudis. Näeme hiljem!
+        <p>
+            <br />
+            <img src="~/Images/sad.jpg" style="max-width: 100%; height: auto;" />
+        </p>
+    }
+    <br />
+    @ViewBag.Message @*ViewBag.Message - отчет об отправке письма с приглашением*@
+</div>

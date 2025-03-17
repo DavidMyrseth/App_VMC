@@ -1,0 +1,58 @@
+﻿@{
+    ViewBag.Title = "Tere tulemast peole!";
+}
+
+<main>
+
+    <div class="jumbotron">
+        <h1 style="color: indigo; text-align: center; font-family: 'Arial', sans-serif;">
+            @ViewBag.Greeting , kallis sõber!
+        </h1>
+    </div>
+
+    <div style="text-align: center; margin-top: 40px; padding: 20px; background-color: aliceblue; border-radius: 8px;">
+        <p style="font-family: 'Arial', sans-serif; color: indigo;">
+            @ViewBag.Message
+        </p>
+        <br />
+        <img src="~/Images/Kutse_App.jpg" alt="Kutse_App" style="max-width: 80%; height: auto; border-radius: 10px;" />
+    </div>
+
+    <div style="text-align: center; margin-top: 40px;">
+        <a href="@Url.Action("Ankeet", "Home")" class="btn btn-primary">
+            Vastan
+        </a>
+    </div>
+</main>
+
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: antiquewhite;
+        color: indigo;
+        margin: 0;
+        padding: 0;
+    }
+
+    .jumbotron {
+        background-color: antiquewhite;
+        color: indigo;
+        padding: 40px;
+        margin-bottom: 20px;
+        border-radius: 15px;
+    }
+
+    .btn-primary {
+        background-color: mediumseagreen;
+        border: none;
+        color: white;
+        padding: 12px 25px;
+        border-radius: 25px;
+        text-align: center;
+        text-decoration: none;
+    }
+
+    .btn-primary:hover {
+        background-color: seagreen;
+    }
+</style>
