@@ -1,4 +1,4 @@
-﻿using Kutse_App.Models;
+using Kutse_App.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -35,7 +35,7 @@ namespace Kutse_App.Controllers
             }
             else if (hour >= 12 && hour < 18)
             {
-                greeting = "Tere päevast!";
+                greeting = "Tere tere!";
             }
             else if (hour >= 18 && hour < 21)
             {
@@ -50,7 +50,7 @@ namespace Kutse_App.Controllers
             string holidayMessage = Pidu.ContainsKey(month) ? Pidu[month] : "";
 
             ViewBag.Greeting = greeting + (string.IsNullOrEmpty(holidayMessage) ? "" : " " + holidayMessage);
-            ViewBag.Message = "Ootan sind minu peole! Palun tule!!!";
+            ViewBag.Message = "Ootan sind minu peole!";
             return View();
         }
 
@@ -97,7 +97,7 @@ namespace Kutse_App.Controllers
                 db.Guests.Add(guest);
                 db.SaveChanges();
 
-                return View("Holidays", guest);
+                return View("Holidays", db.Holidays.ToList());
             }
             catch (Exception ex)
             {
@@ -114,9 +114,9 @@ namespace Kutse_App.Controllers
                 WebMail.SmtpServer = "smtp.gmail.com";
                 WebMail.SmtpPort = 587;
                 WebMail.EnableSsl = true;
-                WebMail.UserName = "jelizaveta.ostapjuk.work@gmail.com";
-                WebMail.Password = "lsrs danp cdwm ogmd ";
-                WebMail.From = "jelizaveta.ostapjuk.work@gmail.com";
+                WebMail.UserName = "david.mirsetSSS@gmail.com";
+                WebMail.Password = "lqwr makk gdoc ktoa";
+                WebMail.From = "david.mirsetSSS@gmail.com";
                 WebMail.Send(guest.Email, " Vastus kutsele ", guest.Name + " vastas " + ((guest.WillAttend ?? false ? " tuleb peole" : " ei tule saatnud")));
                 ViewBag.Message = "Kiri on saatnud!";
             }
@@ -136,12 +136,12 @@ namespace Kutse_App.Controllers
                     WebMail.SmtpServer = "smtp.gmail.com";
                     WebMail.SmtpPort = 587;
                     WebMail.EnableSsl = true;
-                    WebMail.UserName = "jelizaveta.ostapjuk.work@gmail.com";
-                    WebMail.Password = "lsrs danp cdwm ogmd ";
-                    WebMail.From = "jelizaveta.ostapjuk.work@gmail.com";
+                    WebMail.UserName = "david.mirsetSSS @gmail.com";
+                    WebMail.Password = "lqwr makk gdoc ktoa";
+                    WebMail.From = "david.mirsetSSS@gmail.com";
 
-                    WebMail.Send(guest.Email, "Meeldetuletus", guest.Name + ", ara unusta. Pidu toimub 20.01.25! Sind ootavad väga!",
-                    null, "jelizaveta.ostapjuk.work@gmail.com",
+                    WebMail.Send(guest.Email, "Meeldetuletus", guest.Name + ", ara unusta. Toimub 20.11.25",
+                    null, "david.mirsetSSS@gmail.com",
                     filesToAttach: new String[] { Path.Combine(Server.MapPath("~/Images/"), Path.GetFileName("yippy.jpg ")) }
                    );
 
@@ -173,9 +173,9 @@ namespace Kutse_App.Controllers
                 WebMail.SmtpServer = "smtp.gmail.com";
                 WebMail.SmtpPort = 587;
                 WebMail.EnableSsl = true;
-                WebMail.UserName = "jelizaveta.ostapjuk.work@gmail.com";
-                WebMail.Password = "lsrs danp cdwm ogmd ";
-                WebMail.From = "jelizaveta.ostapjuk.work@gmail.com";
+                WebMail.UserName = "david.mirsetSSS@gmail.com";
+                WebMail.Password = "lqwr makk gdoc ktoa";
+                WebMail.From = "david.mirsetSSS@gmail.com";
 
                 WebMail.Send(
                     guest.Email,
@@ -187,14 +187,14 @@ namespace Kutse_App.Controllers
             }
             catch (Exception)
             {
-                ViewBag.Message = "Kahjuks ei saanud meeldetuletust saata!";
+                ViewBag.Message = "Kahjuks ei õnnestunud meeldetuletust saata!";
             }
 
             return View("MyRegistration", new List<Guest> { guest });
         }
 
         [Authorize(Roles = "Admin")]
-        public ActionResult Guests() 
+        public ActionResult Guests()
         {
             var holidays = db.Holidays.ToList();
 
@@ -234,7 +234,7 @@ namespace Kutse_App.Controllers
         public ActionResult Delete(int id)
         {
             Guest g = db.Guests.Find(id);
-            if (g==null)
+            if (g == null)
             {
                 return HttpNotFound();
             }
@@ -242,7 +242,7 @@ namespace Kutse_App.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPost,ActionName("Delete")]
+        [HttpPost, ActionName("Delete")]
         public ActionResult DeleteConfirmed(int id)
         {
             Guest g = db.Guests.Find(id);
@@ -257,7 +257,7 @@ namespace Kutse_App.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
-        public ActionResult Edit(int? id) 
+        public ActionResult Edit(int? id)
         {
             if (id == null)
             {
@@ -295,7 +295,7 @@ namespace Kutse_App.Controllers
         }
 
         [HttpPost, ActionName("Edit3")]
-        public ActionResult EditConfirmed(Guest guest)
+        public ActionResult EditConfirmed3(Guest guest)
         {
             if (ModelState.IsValid)
             {
