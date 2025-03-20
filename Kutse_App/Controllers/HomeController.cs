@@ -7,24 +7,19 @@ using System.Web;
 using System.Web.Helpers;
 using System.Web.Mvc;
 using System.Data.Entity;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace Kutse_App.Controllers
 {
     public class HomeController : Controller
     {
-
-        private static readonly Dictionary<int, string> Pidu = new Dictionary<int, string>
-        {
-            {1, "Head uut aastat!"},
-            {2, "Head Eesti iseseisvuspäeva!"},
-            {12, "Haid jõule"}
-        };
+        GuestContext db = new GuestContext();
+        ApplicationDbContext identityDb = new ApplicationDbContext();
 
         public ActionResult Index()
         {
             string greeting;
-
-
 
             int month = DateTime.Now.Month;
             int hour = DateTime.Now.Hour;
@@ -47,7 +42,10 @@ namespace Kutse_App.Controllers
             }
 
             ViewBag.Greeting = greeting;
-            string holidayMessage = Pidu.ContainsKey(month) ? Pidu[month] : "";
+
+            // Получаем праздники из базы данных
+            var holiday = db.Holidays.FirstOrDefault(h => h.Date.Month == month);
+            string holidayMessage = holiday != null ? holiday.Name : "";
 
             ViewBag.Greeting = greeting + (string.IsNullOrEmpty(holidayMessage) ? "" : " " + holidayMessage);
             ViewBag.Message = "Ootan sind minu peole!";
@@ -55,7 +53,6 @@ namespace Kutse_App.Controllers
         }
 
         [HttpGet]
-
         public ActionResult Ankeet()
         {
             var holidays = db.Holidays.ToList();
@@ -72,7 +69,6 @@ namespace Kutse_App.Controllers
         }
 
         [HttpPost]
-
         public ViewResult Ankeet(Guest guest)
         {
             E_mail(guest);
@@ -107,6 +103,7 @@ namespace Kutse_App.Controllers
                 return View(guest);
             }
         }
+
         public void E_mail(Guest guest)
         {
             try
@@ -117,7 +114,7 @@ namespace Kutse_App.Controllers
                 WebMail.UserName = "david.mirsetSSS@gmail.com";
                 WebMail.Password = "lqwr makk gdoc ktoa";
                 WebMail.From = "david.mirsetSSS@gmail.com";
-                WebMail.Send(guest.Email, " Vastus kutsele ", guest.Name + " vastas " + ((guest.WillAttend ?? false ? " tuleb peole" : " ei tule saatnud")));
+                WebMail.Send(guest.Email, " Vastus kutsele ", guest.Name + " vastas " + ((guest.WillAttend ?? false ? " ei ole" : "peole")));
                 ViewBag.Message = "Kiri on saatnud!";
             }
             catch (Exception)
@@ -155,7 +152,6 @@ namespace Kutse_App.Controllers
 
             return View("Aitäh", guest);
         }
-        GuestContext db = new GuestContext();
 
         [HttpPost]
         public ActionResult SendReminder(string email)
@@ -335,12 +331,14 @@ namespace Kutse_App.Controllers
             var guests = db.Guests.Where(g => g.WillAttend == false).ToList();
             return View("Guests", guests);
         }
+
         [Authorize(Roles = "Admin")]
         public ActionResult AllGuests()
         {
             var guests = db.Guests.ToList();
             return View("Guests", guests);
         }
+
         public ActionResult Holidays()
         {
             IEnumerable<Holiday> holidays = db.Holidays;
@@ -428,6 +426,56 @@ namespace Kutse_App.Controllers
             }
 
             return View(new List<Guest> { guest });
+        }
+
+        [HttpGet]
+        public ActionResult AddHoliday()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult AddHoliday(Holiday holiday)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Holidays.Add(holiday);
+                db.SaveChanges();
+                return RedirectToAction("Holidays");
+            }
+            return View(holiday);
+        }
+
+        // Метод для создания администратора
+        public ActionResult CreateAdmin()
+        {
+            var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(identityDb));
+            var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(identityDb));
+
+            // Создаем роль "Admin", если она не существует
+            if (!roleManager.RoleExists("Admin"))
+            {
+                var role = new IdentityRole { Name = "Admin" };
+                roleManager.Create(role);
+            }
+
+            // Создаем пользователя-администратора
+            var adminEmail = "admin@gmail.com";
+            var adminUser = userManager.FindByEmail(adminEmail);
+            if (adminUser == null)
+            {
+                adminUser = new ApplicationUser
+                {
+                    UserName = adminEmail,
+                    Email = adminEmail,
+                    EmailConfirmed = true
+                };
+                userManager.Create(adminUser, "_46Do5jT*VP)"); // Установите пароль
+                userManager.AddToRole(adminUser.Id, "Admin"); // Назначаем роль "Admin"
+            }
+
+            ViewBag.Message = "Администратор успешно создан!";
+            return View();
         }
     }
 }
